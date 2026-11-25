@@ -1,0 +1,14 @@
+.env
+<<<<<<< HEAD
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.db
+*.log
+=======
+node_modules
+.vercel
+>>>>>>> 42d9e77e2880e8a13ee67d5e9b847d9cd21399e2

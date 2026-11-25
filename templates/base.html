@@ -1,0 +1,81 @@
+{% from "_macros.html" import icon, csrf_field %}
+<!doctype html>
+<html lang="en">
+<head>
+  {% include "_head.html" %}
+  <title>{% block title %}NexMind{% endblock %} | NexMind</title>
+</head>
+<body data-hl="{% block hl %}home{% endblock %}">
+{% include "_sprite.html" %}
+
+{% macro nav_link(endpoint, label, icon_name, hl) %}
+<a href="{{ url_for(endpoint) }}" data-hl="{{ hl }}"{% if request.endpoint == endpoint %} aria-current="page"{% endif %}>
+  {{ icon(icon_name) }}<span>{{ label }}</span>
+</a>
+{% endmacro %}
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="Main">
+    <a class="brand" href="{{ url_for('home') }}">
+      <span class="brand-mark" aria-hidden="true"></span>NexMind
+    </a>
+
+    <nav class="nav">
+      {{ nav_link('home', 'Dashboard', 'home', 'home') }}
+      {{ nav_link('tutor_page', 'AI tutor', 'tutor', 'tutor') }}
+      {{ nav_link('quiz_page', 'Quizzes', 'quiz', 'quiz') }}
+      {{ nav_link('pdf_page', 'PDF summaries', 'pdf', 'pdf') }}
+      {{ nav_link('flashcards_page', 'Flashcards', 'flashcards', 'flashcards') }}
+      {{ nav_link('planner', 'Study planner', 'planner', 'planner') }}
+      {{ nav_link('analytics', 'Analytics', 'analytics', 'analytics') }}
+    </nav>
+
+    <div class="sidebar-foot">
+      <a class="me" href="{{ url_for('profile') }}" title="Your profile">
+        <span class="avatar" aria-hidden="true">{{ (current_user.username or 'S')[:1] }}</span>
+        <span style="min-width:0">
+          <span class="me-name" style="display:block">{{ current_user.username }}</span>
+          <span class="me-mail" style="display:block">{{ current_user.email }}</span>
+        </span>
+      </a>
+      <div class="foot-actions">
+        <button class="btn btn-sm" type="button" data-theme-toggle aria-pressed="false">
+          <svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg><span data-theme-label>Dark mode</span>
+        </button>
+        <form method="post" action="{{ url_for('logout') }}">
+          {{ csrf_field() }}
+          <button class="btn btn-sm" type="submit">{{ icon('logout') }}Log out</button>
+        </form>
+      </div>
+    </div>
+  </aside>
+  <div class="scrim"></div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="btn btn-icon btn-ghost" type="button" data-menu-open aria-controls="sidebar" aria-expanded="false" aria-label="Open menu">
+        {{ icon('menu') }}
+      </button>
+      <a class="brand" href="{{ url_for('home') }}"><span class="brand-mark" aria-hidden="true"></span>NexMind</a>
+    </div>
+
+    <main class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}" role="status">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

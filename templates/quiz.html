@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% from "_macros.html" import page_head, icon %}
+{% block title %}Quizzes{% endblock %}
+{% block hl %}quiz{% endblock %}
+
+{% block content %}
+{{ page_head('quiz', 'Quizzes', 'Test yourself on a topic or on your own notes. Scores feed your analytics.') }}
+
+<section class="panel" id="view-setup">
+  <form id="setup-form" class="stack">
+    <div class="field">
+      <label for="topic">Topic</label>
+      <input class="input" id="topic" name="topic" type="text" maxlength="120" placeholder="For example: The OSI model" autocomplete="off">
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label for="difficulty">Difficulty</label>
+        <select class="select" id="difficulty">
+          <option>Easy</option>
+          <option selected>Medium</option>
+          <option>Hard</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="count">Number of questions</label>
+        <input class="input num" id="count" type="number" min="1" max="30" value="5" inputmode="numeric">
+        <span class="hint">1 to 30</span>
+      </div>
+    </div>
+
+    <details id="notes-box">
+      <summary class="label" style="cursor:pointer">Quiz me on my own notes (optional)</summary>
+      <div class="field" style="margin-top:0.75rem">
+        <label class="sr-only" for="material">Your notes</label>
+        <textarea class="textarea" id="material" rows="6" maxlength="15000" placeholder="Paste your notes or a chapter here. Questions will come from this text only."></textarea>
+        <span class="hint">Up to 15,000 characters.</span>
+      </div>
+    </details>
+
+    <div class="row">
+      <button class="btn btn-primary" id="start" type="submit">Start quiz</button>
+      <span class="muted small" id="setup-status" role="status"></span>
+    </div>
+  </form>
+</section>
+
+<section class="panel stack" id="view-quiz" hidden>
+  <div class="quiz-meta">
+    <span class="small muted num" id="q-counter"></span>
+    <div class="bar" aria-hidden="true"><span id="q-bar"></span></div>
+    <span class="small muted num" id="q-score"></span>
+  </div>
+
+  <h2 class="q-text" id="q-text" style="font-weight:500"></h2>
+  <div class="options" id="q-options" role="group" aria-label="Answer choices"></div>
+  <div class="explain" id="q-explain" hidden></div>
+
+  <div class="row spread">
+    <span class="hint">Press 1 to 4 to answer and Enter for the next question.</span>
+    <button class="btn btn-primary" id="q-next" type="button" hidden>Next question</button>
+  </div>
+</section>
+
+<section class="stack" id="view-result" hidden>
+  <div class="panel stack">
+    <div class="score">
+      <span class="score-n num" id="r-percent"></span>
+    </div>
+    <div>
+      <h2 id="r-line"></h2>
+      <p class="muted" id="r-message" style="margin-top:0.25rem"></p>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary" id="r-retry" type="button">Retake with new questions</button>
+      <button class="btn" id="r-new" type="button">New quiz</button>
+      <button class="btn" id="r-cards" type="button" hidden>Save missed as flashcards</button>
+      <a class="btn btn-ghost" href="{{ url_for('analytics') }}">View analytics</a>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>Review</h2></div>
+    <div class="review" id="review"></div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% from "_macros.html" import icon, csrf_field %}
+<!doctype html>
+<html lang="en">
+<head>
+  {% include "_head.html" %}
+  <title>{% block title %}Welcome{% endblock %} | NexMind</title>
+</head>
+<body>
+<div class="auth">
+  <aside class="auth-side">
+    <a class="brand" href="{{ url_for('login') }}" style="padding:0">
+      <span class="brand-mark" aria-hidden="true"></span>NexMind
+    </a>
+
+    <div>
+      <h1>Study with everything in one place.</h1>
+      <p class="lede">Ask questions, quiz yourself, summarize PDFs, make flashcards, and plan your week. Each tool has its own highlighter colour so you always know where you are.</p>
+    </div>
+
+    <div class="tool-chips" aria-hidden="true">
+      <span data-hl="tutor">AI tutor</span>
+      <span data-hl="quiz">Quizzes</span>
+      <span data-hl="pdf">PDF summaries</span>
+      <span data-hl="flashcards">Flashcards</span>
+      <span data-hl="planner">Study planner</span>
+      <span data-hl="analytics">Analytics</span>
+    </div>
+  </aside>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <a class="brand" href="{{ url_for('login') }}"><span class="brand-mark" aria-hidden="true"></span>NexMind</a>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}" role="alert">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

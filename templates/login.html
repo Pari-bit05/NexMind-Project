@@ -1,0 +1,33 @@
+{% extends "auth_base.html" %}
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+<div>
+  <h2>Log in</h2>
+  <p class="muted" style="margin-top:0.3rem">Pick up where you left off.</p>
+</div>
+
+<form method="post" action="{{ url_for('login') }}" class="stack">
+  {{ csrf_field() }}
+  <input type="hidden" name="next" value="{{ next or '' }}">
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input class="input" id="email" name="email" type="email" autocomplete="email" required autofocus>
+  </div>
+
+  <div class="field">
+    <label for="password">Password</label>
+    <div class="input-wrap">
+      <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+      <button class="btn btn-sm btn-ghost" type="button" data-toggle-password="password" aria-pressed="false">Show</button>
+    </div>
+  </div>
+
+  <label class="check"><input type="checkbox" name="remember" value="1"> Keep me logged in on this device</label>
+
+  <button class="btn btn-primary" type="submit">Log in</button>
+</form>
+
+<p class="auth-alt">New to NexMind? <a href="{{ url_for('register') }}">Create an account</a></p>
+{% endblock %}

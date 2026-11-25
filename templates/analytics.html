@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% from "_macros.html" import page_head, icon %}
+{% block title %}Analytics{% endblock %}
+{% block hl %}analytics{% endblock %}
+
+{% block content %}
+{{ page_head('analytics', 'Analytics', 'See how your quiz scores change and which topics need more work.') }}
+
+<section class="empty panel" id="no-data" hidden>
+  <h3>No quiz results yet</h3>
+  <p>Finish a quiz and your scores will appear here.</p>
+  <a class="btn btn-primary" href="{{ url_for('quiz_page') }}">Take a quiz</a>
+</section>
+
+<div class="stack" id="data" hidden>
+  <section class="stats" style="grid-template-columns:repeat(4, minmax(0, 1fr))" aria-label="Summary">
+    <div class="stat"><div class="stat-n num" id="a-attempts">–</div><div class="stat-l">Quizzes taken</div></div>
+    <div class="stat"><div class="stat-n num" id="a-average">–</div><div class="stat-l">Average score</div></div>
+    <div class="stat"><div class="stat-n num" id="a-best">–</div><div class="stat-l">Best score</div></div>
+    <div class="stat"><div class="stat-n num" id="a-correct">–</div><div class="stat-l">Questions answered correctly</div></div>
+  </section>
+
+  <section class="panel chart">
+    <div class="panel-head">
+      <h2>Score over time</h2>
+      <span class="muted small" id="trend-note"></span>
+    </div>
+    <div id="chart-trend"></div>
+  </section>
+
+  <section class="grid-2">
+    <div class="panel chart">
+      <div class="panel-head">
+        <h2>Average by topic</h2>
+        <span class="muted small">Dashed line marks 70%</span>
+      </div>
+      <div id="chart-topics"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>Needs more work</h2></div>
+      <ul class="feed" id="weak-list"></ul>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Recent quizzes</h2></div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Topic</th><th>Score</th><th>Result</th><th>Taken</th></tr></thead>
+        <tbody id="history"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<p class="muted" id="a-error" hidden>Couldn't load your analytics. Refresh the page to try again.</p>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}

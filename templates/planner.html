@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% from "_macros.html" import page_head, icon %}
+{% block title %}Study planner{% endblock %}
+{% block hl %}planner{% endblock %}
+
+{% block content %}
+{{ page_head('planner', 'Study planner', 'Plan what to study and tick it off when it\'s done.') }}
+
+<section class="panel">
+  <div class="panel-head"><h2>Add a task</h2></div>
+  <form id="task-form" class="stack">
+    <div class="form-grid">
+      <div class="field">
+        <label for="subject">Subject</label>
+        <input class="input" id="subject" type="text" maxlength="80" list="subject-list" placeholder="For example: Networks" required autocomplete="off">
+        <datalist id="subject-list"></datalist>
+      </div>
+      <div class="field">
+        <label for="topic">What to study</label>
+        <input class="input" id="topic" type="text" maxlength="200" placeholder="For example: Revise the OSI layers" required autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="due">Due date (optional)</label>
+        <input class="input" id="due" type="date">
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary" type="submit">{{ icon('plus') }}Add task</button>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Your tasks</h2>
+    <div class="tabs" role="group" aria-label="Filter tasks">
+      <button type="button" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" data-filter="todo" aria-pressed="false">To do</button>
+      <button type="button" data-filter="overdue" aria-pressed="false">Overdue</button>
+      <button type="button" data-filter="done" aria-pressed="false">Done</button>
+    </div>
+  </div>
+
+  <div class="row spread" style="margin-bottom:1rem">
+    <span class="small muted num" id="progress-text">Loading…</span>
+    <div class="bar" style="width:min(220px, 50%)" aria-hidden="true"><span id="progress-bar"></span></div>
+  </div>
+
+  <ul class="tasks" id="task-list" aria-live="polite"></ul>
+  <div class="empty" id="task-empty" hidden>
+    <h3 id="empty-title">No tasks yet</h3>
+    <p id="empty-text">Add your first task above to start planning.</p>
+  </div>
+</section>
+
+<dialog id="edit-dialog" aria-labelledby="edit-title">
+  <form id="edit-form" class="stack">
+    <h2 id="edit-title">Edit task</h2>
+    <div class="field">
+      <label for="edit-subject">Subject</label>
+      <input class="input" id="edit-subject" type="text" maxlength="80" required>
+    </div>
+    <div class="field">
+      <label for="edit-topic">What to study</label>
+      <input class="input" id="edit-topic" type="text" maxlength="200" required>
+    </div>
+    <div class="field">
+      <label for="edit-due">Due date (optional)</label>
+      <input class="input" id="edit-due" type="date">
+    </div>
+    <div class="row row-end">
+      <button class="btn" id="edit-cancel" type="button">Cancel</button>
+      <button class="btn btn-primary" type="submit">Save changes</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/planner.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon %}
+{% block title %}Dashboard{% endblock %}
+{% block hl %}home{% endblock %}
+
+{% block content %}
+<section class="stack">
+  <div class="hello">
+    <h1 id="greeting" data-name="{{ current_user.username }}">Welcome back, {{ current_user.username }}</h1>
+    <p id="hello-sub">What are you studying today?</p>
+  </div>
+
+  <form class="ask-bar" action="{{ url_for('tutor_page') }}" method="get">
+    <label class="sr-only" for="ask-input">Ask the AI tutor</label>
+    <input class="input" id="ask-input" name="q" type="text" maxlength="4000" placeholder="Ask the tutor anything, like “Why does the sky look blue?”" autocomplete="off">
+    <button class="btn btn-primary" type="submit">Ask tutor</button>
+  </form>
+</section>
+
+<section class="stats" aria-label="Your progress">
+  <div class="stat" data-hl="quiz">
+    <div class="stat-n num" id="stat-avg">–</div>
+    <div class="stat-l">Average quiz score</div>
+    <div class="hint" id="stat-avg-note">Loading…</div>
+  </div>
+  <div class="stat" data-hl="planner">
+    <div class="stat-n num" id="stat-tasks">–</div>
+    <div class="stat-l">Study tasks finished</div>
+    <div class="bar" style="margin-top:0.5rem"><span id="tasks-bar"></span></div>
+  </div>
+  <div class="stat" data-hl="flashcards">
+    <div class="stat-n num" id="stat-cards">–</div>
+    <div class="stat-l">Flashcards saved</div>
+    <div class="hint" id="stat-cards-note">Loading…</div>
+  </div>
+</section>
+
+<section class="grid-2">
+  <div class="panel" data-hl="planner">
+    <div class="panel-head">
+      <h2>Due soon</h2>
+      <a class="small" href="{{ url_for('planner') }}">Open planner</a>
+    </div>
+    <ul class="feed" id="due-list"><li class="muted">Loading…</li></ul>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Recent activity</h2>
+    </div>
+    <ul class="feed" id="activity-list"><li class="muted">Loading…</li></ul>
+  </div>
+</section>
+
+<section class="stack">
+  <h2>Start something</h2>
+  <div class="tools">
+    <a class="tool" href="{{ url_for('tutor_page') }}" data-hl="tutor">
+      <div class="tool-top"><span class="page-mark">{{ icon('tutor') }}</span><span class="tool-count num" id="c-tutor">0</span></div>
+      <h3>AI tutor</h3>
+      <p>Get a clear explanation, in the style that suits you.</p>
+    </a>
+    <a class="tool" href="{{ url_for('quiz_page') }}" data-hl="quiz">
+      <div class="tool-top"><span class="page-mark">{{ icon('quiz') }}</span><span class="tool-count num" id="c-quiz">0</span></div>
+      <h3>Quizzes</h3>
+      <p>Test yourself on any topic or on your own notes.</p>
+    </a>
+    <a class="tool" href="{{ url_for('pdf_page') }}" data-hl="pdf">
+      <div class="tool-top"><span class="page-mark">{{ icon('pdf') }}</span><span class="tool-count num" id="c-pdf">0</span></div>
+      <h3>PDF summaries</h3>
+      <p>Turn a chapter or slide deck into short study notes.</p>
+    </a>
+    <a class="tool" href="{{ url_for('flashcards_page') }}" data-hl="flashcards">
+      <div class="tool-top"><span class="page-mark">{{ icon('flashcards') }}</span><span class="tool-count num" id="c-flashcards">0</span></div>
+      <h3>Flashcards</h3>
+      <p>Make decks with AI or by hand, then study them.</p>
+    </a>
+    <a class="tool" href="{{ url_for('planner') }}" data-hl="planner">
+      <div class="tool-top"><span class="page-mark">{{ icon('planner') }}</span><span class="tool-count num" id="c-planner">0</span></div>
+      <h3>Study planner</h3>
+      <p>Track what to study and when it's due.</p>
+    </a>
+    <a class="tool" href="{{ url_for('analytics') }}" data-hl="analytics">
+      <div class="tool-top"><span class="page-mark">{{ icon('analytics') }}</span><span class="tool-count num" id="c-analytics">0</span></div>
+      <h3>Analytics</h3>
+      <p>See which topics are strong and which need work.</p>
+    </a>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

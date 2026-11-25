@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% from "_macros.html" import page_head, icon %}
+{% block title %}AI tutor{% endblock %}
+{% block hl %}tutor{% endblock %}
+
+{% block content %}
+{{ page_head('tutor', 'AI tutor', 'Ask anything, then choose how you want it explained.') }}
+
+<section class="panel chat-panel">
+  <div class="chat-log" id="chat-log" aria-live="polite" aria-label="Conversation">
+    <div class="chat-empty" id="chat-empty">
+      <h2>What would you like to understand?</h2>
+      <p class="muted">Try a question below, or type your own. Follow-up questions keep the context of the chat.</p>
+      <div class="suggest">
+        <button type="button" data-q="Explain how photosynthesis works.">How photosynthesis works</button>
+        <button type="button" data-q="What is the difference between TCP and UDP?">TCP vs UDP</button>
+        <button type="button" data-q="Help me understand the Pythagorean theorem with an example.">The Pythagorean theorem</button>
+        <button type="button" data-q="Why did the Roman Republic fall?">Why the Roman Republic fell</button>
+      </div>
+    </div>
+  </div>
+
+  <form class="composer" id="composer">
+    <div class="composer-row">
+      <div class="field">
+        <label class="sr-only" for="mode">Explanation style</label>
+        <select class="select" id="mode" name="mode">
+          {% for mode in modes %}<option value="{{ mode }}">{{ mode }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field grow">
+        <label class="sr-only" for="question">Your question</label>
+        <textarea class="textarea" id="question" name="question" rows="1" maxlength="4000" placeholder="Ask a question…"></textarea>
+      </div>
+      <button class="btn btn-primary" id="send" type="submit" aria-label="Send question">{{ icon('send') }}Send</button>
+    </div>
+    <div class="row spread">
+      <span class="hint">Press Enter to send and Shift+Enter for a new line.</span>
+      <button class="btn btn-sm btn-ghost" id="clear" type="button">Clear chat</button>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/tutor.js') }}"></script>
+{% endblock %}

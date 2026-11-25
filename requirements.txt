@@ -1,0 +1,6 @@
+Flask
+Flask-Login
+python-dotenv
+groq
+PyMuPDF
+Werkzeug

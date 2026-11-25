@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% from "_macros.html" import page_head, icon %}
+{% block title %}Flashcards{% endblock %}
+{% block hl %}flashcards{% endblock %}
+
+{% block content %}
+{{ page_head('flashcards', 'Flashcards', 'Make decks with AI or by hand, then study them one card at a time.') }}
+
+<section class="grid-2">
+  <div class="panel">
+    <div class="panel-head"><h2>Generate with AI</h2></div>
+    <form id="ai-form" class="stack">
+      <div class="field">
+        <label for="ai-topic">Topic</label>
+        <input class="input" id="ai-topic" type="text" maxlength="120" placeholder="For example: Cell biology" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="ai-count">Number of cards</label>
+        <input class="input num" id="ai-count" type="number" min="1" max="20" value="10" inputmode="numeric">
+        <span class="hint">1 to 20</span>
+      </div>
+      <details>
+        <summary class="label" style="cursor:pointer">Use my own notes instead (optional)</summary>
+        <div class="field" style="margin-top:0.75rem">
+          <label class="sr-only" for="ai-material">Your notes</label>
+          <textarea class="textarea" id="ai-material" rows="5" maxlength="15000" placeholder="Paste notes here. Cards will be made from this text."></textarea>
+        </div>
+      </details>
+      <div class="row">
+        <button class="btn btn-primary" id="ai-button" type="submit">Generate cards</button>
+        <span class="muted small" id="ai-status" role="status"></span>
+      </div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>Add a card by hand</h2></div>
+    <form id="manual-form" class="stack">
+      <div class="field">
+        <label for="m-question">Question</label>
+        <textarea class="textarea" id="m-question" rows="2" maxlength="500" required></textarea>
+      </div>
+      <div class="field">
+        <label for="m-answer">Answer</label>
+        <textarea class="textarea" id="m-answer" rows="2" maxlength="2000" required></textarea>
+      </div>
+      <div class="field">
+        <label for="m-topic">Deck name</label>
+        <input class="input" id="m-topic" type="text" maxlength="120" value="My cards" list="deck-list" autocomplete="off">
+      </div>
+      <div class="row"><button class="btn btn-primary" type="submit">{{ icon('plus') }}Add card</button></div>
+    </form>
+  </div>
+</section>
+
+<section class="stack">
+  <div class="row spread">
+    <h2>Your cards <span class="muted num" id="card-count"></span></h2>
+    <div class="row">
+      <label class="sr-only" for="deck-filter">Show deck</label>
+      <select class="select" id="deck-filter" style="width:auto"><option value="">All decks</option></select>
+      <label class="sr-only" for="search">Search cards</label>
+      <input class="input" id="search" type="search" placeholder="Search cards" style="width:180px">
+      <button class="btn btn-primary" id="study-start" type="button" disabled>{{ icon('play') }}Study</button>
+    </div>
+  </div>
+
+  <datalist id="deck-list"></datalist>
+  <div class="deck" id="deck"></div>
+
+  <div class="empty panel" id="deck-empty" hidden>
+    <h3 id="deck-empty-title">No flashcards yet</h3>
+    <p id="deck-empty-text">Generate a deck above, or add a card by hand.</p>
+  </div>
+</section>
+
+<dialog id="edit-dialog" aria-labelledby="edit-title">
+  <form id="edit-form" class="stack">
+    <h2 id="edit-title">Edit card</h2>
+    <div class="field">
+      <label for="e-question">Question</label>
+      <textarea class="textarea" id="e-question" rows="2" maxlength="500" required></textarea>
+    </div>
+    <div class="field">
+      <label for="e-answer">Answer</label>
+      <textarea class="textarea" id="e-answer" rows="3" maxlength="2000" required></textarea>
+    </div>
+    <div class="field">
+      <label for="e-topic">Deck name</label>
+      <input class="input" id="e-topic" type="text" maxlength="120">
+    </div>
+    <div class="row row-end">
+      <button class="btn" id="edit-cancel" type="button">Cancel</button>
+      <button class="btn btn-primary" type="submit">Save changes</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="study-dialog" aria-labelledby="study-title">
+  <div id="study-main" class="stack">
+    <div class="row spread">
+      <h2 id="study-title">Study</h2>
+      <button class="btn btn-icon btn-ghost btn-sm" id="study-close" type="button" aria-label="Close study mode">{{ icon('x') }}</button>
+    </div>
+    <div class="quiz-meta">
+      <span class="small muted num" id="study-counter"></span>
+      <div class="bar" aria-hidden="true"><span id="study-bar"></span></div>
+    </div>
+
+    <div class="flip study-card" id="study-card" tabindex="0" role="button" aria-label="Flip card">
+      <div class="flip-inner">
+        <div class="face front"><span class="side">Question</span><span id="study-q"></span></div>
+        <div class="face back"><span class="side">Answer</span><span id="study-a"></span></div>
+      </div>
+    </div>
+
+    <div class="row spread">
+      <span class="hint">Space flips the card. Left arrow means still learning and right arrow means got it.</span>
+    </div>
+    <div class="row">
+      <button class="btn grow" id="study-miss" type="button">Still learning</button>
+      <button class="btn btn-primary grow" id="study-know" type="button">Got it</button>
+    </div>
+  </div>
+
+  <div id="study-done" class="stack" hidden>
+    <h2>Round finished</h2>
+    <p class="muted" id="study-summary"></p>
+    <div class="row">
+      <button class="btn btn-primary" id="study-again-missed" type="button">Study the ones I missed</button>
+      <button class="btn" id="study-again-all" type="button">Start over</button>
+      <button class="btn btn-ghost" id="study-done-close" type="button">Close</button>
+    </div>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/flashcards.js') }}"></script>
+{% endblock %}

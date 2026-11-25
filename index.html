@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StudyBuddy for Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f5f9;--card:#fff;--ink:#14213d;--muted:#5b6578;--line:#cdd6e4;--blue:#2748c9;--mark:#ffd84d;--ok:#1b7f4b;--bad:#b3261e;
+--grid:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px)}
+[data-theme=dark]{--bg:#0f1626;--card:#18213a;--ink:#e8edf7;--muted:#9aa6bf;--line:#2a3652;--blue:#7d97ff;--mark:#ffd84d;--ok:#4cc38a;--bad:#ff8a80}
+*{box-sizing:border-box}
+html{scroll-padding-top:70px}
+body{margin:0;font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif;color:var(--ink);background:var(--bg) var(--grid);background-size:28px 28px;background-attachment:fixed}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:800}
+h2{font-size:1.6rem}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:2px solid var(--ink);display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;padding:.6rem 1rem}
+.logo{font:800 1.2rem "Bricolage Grotesque",sans-serif}
+nav{display:flex;gap:.25rem;flex-wrap:wrap;flex:1}
+nav button,.btn{font:500 .95rem inherit;font-family:inherit;border:2px solid var(--ink);background:var(--card);color:var(--ink);padding:.4rem .8rem;border-radius:6px;cursor:pointer}
+nav button.on,.btn.primary{background:var(--ink);color:var(--bg)}
+.btn:disabled{opacity:.5;cursor:wait}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+main{max-width:860px;margin:0 auto;padding:1.5rem 1rem 6rem}
+section{display:none}section.on{display:block}
+.hl{background:linear-gradient(transparent 55%,var(--mark) 55%)}
+[data-theme=dark] .hl{background:none;color:var(--mark)}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:8px;padding:1.2rem;margin:1rem 0;box-shadow:5px 5px 0 var(--ink)}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+label{display:block;font-weight:500;margin:.8rem 0 .25rem}
+input,select,textarea{width:100%;font:inherit;padding:.55rem;border:2px solid var(--ink);border-radius:6px;background:var(--bg);color:var(--ink)}
+.out{white-space:pre-wrap;margin-top:1rem}
+.err{color:var(--bad);font-weight:500;margin-top:.8rem}
+.q{border-top:1px solid var(--line);padding-top:.8rem;margin-top:.8rem}
+.q label{display:flex;gap:.5rem;font-weight:400;margin:.2rem 0}.q input{width:auto}
+.q.right .ans{color:var(--ok)}.q.wrong .ans{color:var(--bad)}
+.exp{color:var(--muted);font-size:.92rem}
+#fab{position:fixed;right:1rem;bottom:1rem;z-index:6;border-radius:999px;padding:.7rem 1.1rem;background:var(--blue);color:#fff;border:2px solid var(--ink);font-weight:500;cursor:pointer;font-family:inherit}
+#chat{position:fixed;right:1rem;bottom:4.2rem;z-index:6;width:min(380px,calc(100vw - 2rem));height:min(520px,70vh);background:var(--card);border:2px solid var(--ink);border-radius:8px;display:none;flex-direction:column;box-shadow:5px 5px 0 var(--ink)}
+#chat.open{display:flex}
+#log{flex:1;overflow-y:auto;padding:.8rem;display:flex;flex-direction:column;gap:.5rem}
+.m{padding:.5rem .7rem;border-radius:8px;max-width:88%;white-space:pre-wrap;font-size:.95rem}
+.m.u{align-self:flex-end;background:var(--ink);color:var(--bg)}
+.m.b{align-self:flex-start;background:var(--bg);border:1px solid var(--line)}
+#cf{display:flex;gap:.4rem;padding:.6rem;border-top:2px solid var(--ink)}
+@media(max-width:640px){header{justify-content:space-between}nav{order:3;flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap}nav button{flex-shrink:0}}
+@media(prefers-reduced-motion:no-preference){.card{transition:transform .15s}.card:hover{transform:translate(-1px,-1px)}}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">StudyBuddy</span>
+  <nav id="nav" aria-label="Main">
+    <button data-t="home" class="on">Home</button><button data-t="explain">Explain a topic</button><button data-t="quiz">Quiz me</button><button data-t="plan">Plan revision</button><button data-t="about">About</button>
+  </nav>
+  <button class="btn" id="theme" aria-label="Toggle dark mode">Dark mode</button>
+</header>
+
+<main>
+<section id="home" class="on">
+  <h1>Understand it once.<br><span class="hl">Revise it right.</span></h1>
+  <p>StudyBuddy helps engineering students learn hard concepts in plain language, practise with quizzes, and plan revision before exams.</p>
+  <div class="grid">
+    <div class="card"><h3>Explain a topic</h3><p>Step-by-step explanations with examples, at your level.</p><button class="btn primary" data-go="explain">Start learning</button></div>
+    <div class="card"><h3>Quiz me</h3><p>MCQs with answers and reasons, scored instantly.</p><button class="btn primary" data-go="quiz">Take a quiz</button></div>
+    <div class="card"><h3>Plan revision</h3><p>A day-by-day timetable from your exam date and topics.</p><button class="btn primary" data-go="plan">Build a plan</button></div>
+  </div>
+  <p>Stuck on something else? Tap <b>Ask tutor</b> at the bottom right.</p>
+</section>
+
+<section id="explain">
+  <h2>Explain a topic</h2>
+  <div class="card">
+    <label for="eb">Branch</label>
+    <select id="eb"><option>CSE</option><option>ECE</option><option>Electrical</option><option>Mechanical</option><option>Civil</option><option>Chemical</option></select>
+    <label for="es">Subject</label><input id="es" maxlength="80" placeholder="e.g. Data Structures">
+    <label for="et">Topic</label><input id="et" maxlength="120" placeholder="e.g. Binary search trees">
+    <label for="el">Level</label>
+    <select id="el"><option>Beginner</option><option>Intermediate</option><option>Exam-Ready</option></select>
+    <p><button class="btn primary" id="eg">Explain it</button> <button class="btn" id="eres">Find study resources</button></p>
+    <div id="eo" class="out"></div>
+    <div id="ep" class="exp"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2>Quiz me</h2>
+  <div class="card">
+    <label for="qt">Topic</label><input id="qt" maxlength="120" placeholder="e.g. Kirchhoff's laws">
+    <label for="qn">Number of questions</label>
+    <select id="qn"><option>3</option><option selected>5</option><option>8</option><option>10</option></select>
+    <p><button class="btn primary" id="qg">Generate quiz</button></p>
+    <div id="qo"></div>
+  </div>
+</section>
+
+<section id="plan">
+  <h2>Plan revision</h2>
+  <div class="card">
+    <label for="pd">Exam date</label><input type="date" id="pd">
+    <label for="ps">Subjects and topics (one per line)</label>
+    <textarea id="ps" rows="5" maxlength="1500" placeholder="Maths: Laplace transform&#10;Signals: Fourier series"></textarea>
+    <label for="ph">Study hours per day</label><input type="number" id="ph" min="1" max="14" value="4">
+    <p><button class="btn primary" id="pg">Create plan</button></p>
+    <div id="po" class="out"></div>
+  </div>
+</section>
+
+<section id="about">
+  <h2>About StudyBuddy</h2>
+  <div class="card">
+    <p><b>Problem:</b> dense textbooks, little personal practice and last-minute revision make engineering subjects harder than they need to be.</p>
+    <p><b>Solution:</b> an AI study assistant that explains, quizzes and plans, built for first- and second-year engineering students.</p>
+    <p><b>Built with:</b> HTML, CSS, JavaScript and a Vercel serverless function. Claude explains topics and powers the tutor chat, Gemini generates quizzes and revision plans, and Perplexity finds current study resources with sources.</p>
+  </div>
+</section>
+</main>
+
+<button id="fab" aria-expanded="false" aria-controls="chat">Ask tutor</button>
+<div id="chat" role="dialog" aria-label="StudyBuddy tutor chat">
+  <div id="log" aria-live="polite"><div class="m b">Hi! Ask me any engineering study doubt.</div></div>
+  <form id="cf"><input id="ci" maxlength="500" placeholder="Type your doubt..." aria-label="Your question" autocomplete="off"><button class="btn primary" id="cs">Send</button></form>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const API = "/api/chat";           // serverless route; the API key stays on the server
+let lastProvider = "";            // which AI answered last (claude / gemini / perplexity)
+let history = [];                  // chat memory for this session
+
+/* ---------- navigation ---------- */
+function show(t){
+  document.querySelectorAll("main section").forEach(s => s.classList.toggle("on", s.id === t));
+  document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("on", b.dataset.t === t));
+  scrollTo(0,0);
+}
+document.querySelectorAll("#nav button").forEach(b => b.onclick = () => show(b.dataset.t));
+document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => show(b.dataset.go));
+
+/* ---------- theme ---------- */
+$("theme").onclick = () => {
+  const d = document.documentElement, dark = d.dataset.theme === "dark";
+  d.dataset.theme = dark ? "light" : "dark";
+  $("theme").textContent = dark ? "Dark mode" : "Light mode";
+};
+
+/* ---------- API helper with error handling ---------- */
+async function ask(mode, input, hist = [], retry = true){
+  if (!input.trim()) throw new Error("Please fill in the required fields first.");
+  let r;
+  try {
+    r = await fetch(API, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({mode, input, history:hist})});
+  } catch { if (retry) return ask(mode, input, hist, false); throw new Error("Network problem. Check your connection and try again."); }
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok && retry && r.status >= 500) return ask(mode, input, hist, false);   // one automatic retry
+  if (!r.ok) throw new Error(d.error || "Something went wrong. Please try again.");
+  lastProvider = d.provider || ""; return d.reply;
+}
+// Run an action on a button: disables it, shows progress, shows friendly errors
+async function run(btn, out, work){
+  const label = btn.textContent; btn.disabled = true; btn.textContent = "Working...";
+  out.innerHTML = "";
+  try { await work(); }
+  catch(e){ const p = document.createElement("div"); p.className = "err"; p.setAttribute("role","alert"); p.textContent = e.message; out.appendChild(p); }
+  btn.disabled = false; btn.textContent = label;
+}
+
+function badge(id){ $(id).textContent = lastProvider ? "Answered by " + lastProvider[0].toUpperCase() + lastProvider.slice(1) : ""; }
+
+/* ---------- Topic Explainer ---------- */
+$("eg").onclick = () => run($("eg"), $("eo"), async () => {
+  const s = $("es").value.trim(), t = $("et").value.trim();
+  if (!s || !t) throw new Error("Enter both a subject and a topic.");
+  $("eo").textContent = await ask("explain", `Branch: ${$("eb").value}\nSubject: ${s}\nTopic: ${t}\nLevel: ${$("el").value}`);
+  badge("ep");
+});
+$("eres").onclick = () => run($("eres"), $("eo"), async () => {
+  const s = $("es").value.trim(), t = $("et").value.trim();
+  if (!t) throw new Error("Enter a topic to search resources for.");
+  $("eo").textContent = await ask("resources", `Branch: ${$("eb").value}\nSubject: ${s}\nTopic: ${t}`);
+  badge("ep");
+});
+
+/* ---------- Quiz Generator ---------- */
+$("qg").onclick = () => run($("qg"), $("qo"), async () => {
+  const t = $("qt").value.trim();
+  if (!t) throw new Error("Enter a topic for the quiz.");
+  const raw = await ask("quiz", `Topic: ${t}\nNumber of questions: ${$("qn").value}`);
+  let qs;
+  try { qs = JSON.parse(raw.replace(/```json|```/g, "").trim()); if (!Array.isArray(qs) || !qs.length) throw 0; }
+  catch { throw new Error("The AI reply could not be read as a quiz. Please try again."); }
+  renderQuiz(qs);
+  const n = document.createElement('div'); n.className = 'exp'; n.textContent = 'Quiz by ' + lastProvider[0].toUpperCase() + lastProvider.slice(1); $('qo').appendChild(n);
+});
+function renderQuiz(qs){
+  const box = $("qo"); box.innerHTML = "";
+  qs.forEach((q, i) => {
+    const d = document.createElement("div"); d.className = "q";
+    const h = document.createElement("div"); h.innerHTML = "<b></b>"; h.firstChild.textContent = `${i+1}. ${q.question}`; d.appendChild(h);
+    (q.options || []).forEach((o, j) => {
+      const l = document.createElement("label"), r = document.createElement("input");
+      r.type = "radio"; r.name = "q" + i; r.value = j;
+      l.append(r, document.createTextNode(o)); d.appendChild(l);
+    });
+    const a = document.createElement("div"); a.className = "ans exp"; d.appendChild(a); box.appendChild(d);
+  });
+  const b = document.createElement("button"); b.className = "btn primary"; b.textContent = "Check answers";
+  const sc = document.createElement("h3"); sc.style.marginTop = "1rem";
+  b.onclick = () => {
+    let n = 0;
+    qs.forEach((q, i) => {
+      const c = document.querySelector(`input[name=q${i}]:checked`), d = box.children[i];
+      const ok = c && +c.value === q.answer; if (ok) n++;
+      d.className = "q " + (ok ? "right" : "wrong");
+      d.querySelector(".ans").textContent = (ok ? "Correct. " : `Answer: ${q.options[q.answer]}. `) + (q.explanation || "");
+    });
+    sc.textContent = `Score: ${n} / ${qs.length}`;
+  };
+  box.append(b, sc);
+}
+
+/* ---------- Revision Planner ---------- */
+$("pg").onclick = () => run($("pg"), $("po"), async () => {
+  const d = $("pd").value, s = $("ps").value.trim();
+  if (!d || !s) throw new Error("Add your exam date and at least one topic.");
+  const days = Math.ceil((new Date(d) - new Date().setHours(0,0,0,0)) / 864e5);
+  if (days < 1) throw new Error("Pick an exam date in the future.");
+  $("po").textContent = await ask("plan", `Today is ${new Date().toDateString()}. Exam date: ${d} (${days} days left).\nStudy hours per day: ${$("ph").value}\nTopics:\n${s}`);
+});
+
+/* ---------- Chatbot ---------- */
+$("fab").onclick = () => {
+  const o = $("chat").classList.toggle("open"); $("fab").setAttribute("aria-expanded", o);
+  if (o) $("ci").focus();
+};
+function bubble(text, cls){
+  const m = document.createElement("div"); m.className = "m " + cls; m.textContent = text;
+  $("log").appendChild(m); $("log").scrollTop = $("log").scrollHeight; return m;
+}
+$("cf").onsubmit = async e => {
+  e.preventDefault();
+  const text = $("ci").value.trim();
+  if (!text) return bubble("Type a question first.", "b");
+  $("ci").value = ""; bubble(text, "u");
+  const typing = bubble("Typing...", "b"); $("cs").disabled = true;
+  try {
+    const reply = await ask("chat", text, history);
+    typing.textContent = reply;
+    history.push({role:"user", content:text}, {role:"assistant", content:reply});
+    history = history.slice(-10);
+  } catch(err){ typing.textContent = err.message; }
+  $("cs").disabled = false; $("ci").focus();
+};
+</script>
+</body>
+</html>

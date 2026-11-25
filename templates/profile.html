@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% from "_macros.html" import page_head %}
+{% block title %}Profile{% endblock %}
+{% block hl %}profile{% endblock %}
+
+{% block content %}
+{{ page_head('profile', 'Your profile', 'Manage your name, password and study data.') }}
+
+<section class="grid-2">
+  <div class="stack">
+    <div class="panel">
+      <div class="panel-head"><h2>Account</h2></div>
+      <form id="name-form" class="stack">
+        <div class="field">
+          <label for="username">Your name</label>
+          <input class="input" id="username" name="username" type="text" maxlength="40" value="{{ current_user.username }}" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input class="input" id="email" type="email" value="{{ current_user.email }}" readonly aria-describedby="email-hint">
+          <span class="hint" id="email-hint">Your email is your login, so it can't be changed here.</span>
+        </div>
+        <div class="field">
+          <span class="label">Member since</span>
+          <span class="muted" id="member-since" data-iso="{{ member_since or '' }}">Before sign-up dates were recorded</span>
+        </div>
+        <div class="row row-end"><button class="btn btn-primary" type="submit">Save name</button></div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>Change password</h2></div>
+      <form id="password-form" class="stack">
+        <div class="field">
+          <label for="current_password">Current password</label>
+          <input class="input" id="current_password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="field">
+          <label for="new_password">New password</label>
+          <input class="input" id="new_password" type="password" minlength="6" autocomplete="new-password" required>
+          <span class="hint">At least 6 characters.</span>
+        </div>
+        <div class="field">
+          <label for="confirm_password">Confirm new password</label>
+          <input class="input" id="confirm_password" type="password" minlength="6" autocomplete="new-password" required>
+        </div>
+        <div class="row row-end"><button class="btn btn-primary" type="submit">Change password</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="panel">
+      <div class="panel-head"><h2>Your study data</h2></div>
+      <div class="facts">
+        <div><div class="stat-n num">{{ totals.quizzes }}</div><div class="muted">Quizzes taken</div></div>
+        <div><div class="stat-n num">{{ totals.flashcards }}</div><div class="muted">Flashcards</div></div>
+        <div><div class="stat-n num">{{ totals.tasks }}</div><div class="muted">Study tasks</div></div>
+        <div><div class="stat-n num">{{ totals.activities }}</div><div class="muted">Activities logged</div></div>
+      </div>
+    </div>
+
+    <div class="panel danger">
+      <div class="panel-head"><h2>Delete account</h2></div>
+      <p class="muted">This permanently deletes your account, quiz results, flashcards, tasks and activity. It can't be undone.</p>
+      <form id="delete-form" class="stack" style="margin-top:1rem">
+        <div class="field">
+          <label for="delete_password">Enter your password to confirm</label>
+          <input class="input" id="delete_password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="row row-end"><button class="btn btn-danger" type="submit">Delete my account</button></div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

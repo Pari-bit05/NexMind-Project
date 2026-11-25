@@ -1,0 +1,7 @@
+{
+  "name": "studybuddy-engineering",
+  "version": "1.0.0",
+  "description": "AI-powered study assistant for engineering students (Claude + Gemini + Perplexity)",
+  "private": true,
+  "engines": { "node": ">=18" }
+}

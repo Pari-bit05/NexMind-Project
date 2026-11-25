@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {% include "_head.html" %}
+  <title>{{ title }} | NexMind</title>
+</head>
+<body>
+<main class="error-page">
+  <div class="stack" style="justify-items:center">
+    <div class="code">{{ code }}</div>
+    <h1>{{ title }}</h1>
+    <p class="muted">{{ message }}</p>
+    <a class="btn btn-primary" href="{{ url_for('home') }}">Back to dashboard</a>
+  </div>
+</main>
+</body>
+</html>

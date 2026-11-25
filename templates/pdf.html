@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "_macros.html" import page_head, icon %}
+{% block title %}PDF summaries{% endblock %}
+{% block hl %}pdf{% endblock %}
+
+{% block content %}
+{{ page_head('pdf', 'PDF summaries', 'Upload a chapter, slide deck or paper and get short study notes.') }}
+
+<section class="panel stack">
+  <label class="drop" id="drop" for="file">
+    <span class="page-mark">{{ icon('upload') }}</span>
+    <strong>Drop a PDF here or click to choose one</strong>
+    <span class="muted small">Up to 10 MB. The PDF needs selectable text, so scanned pages won't work.</span>
+  </label>
+  <input class="sr-only" id="file" type="file" accept="application/pdf,.pdf">
+
+  <div class="status" id="file-info" hidden>
+    {{ icon('pdf') }}
+    <span class="grow"><strong id="file-name"></strong> <span class="muted small" id="file-size"></span></span>
+    <button class="btn btn-sm btn-ghost" id="file-clear" type="button">Remove</button>
+  </div>
+
+  <div class="row">
+    <button class="btn btn-primary" id="summarize" type="button" disabled>Summarize PDF</button>
+    <span class="muted small" id="pdf-status" role="status"></span>
+  </div>
+</section>
+
+<section class="panel stack" id="result" hidden>
+  <div class="panel-head" style="margin-bottom:0">
+    <div>
+      <h2 id="result-title"></h2>
+      <p class="muted small" id="result-meta"></p>
+    </div>
+  </div>
+
+  <div class="row">
+    <button class="btn btn-sm" id="copy" type="button">{{ icon('copy') }}Copy</button>
+    <button class="btn btn-sm" id="download" type="button">Download as Markdown</button>
+    <button class="btn btn-sm" id="make-cards" type="button">Make flashcards</button>
+    <button class="btn btn-sm" id="make-quiz" type="button">Quiz me on this</button>
+  </div>
+
+  <hr class="divider">
+
+  <div class="prose" id="summary"></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pdf.js') }}"></script>
+{% endblock %}

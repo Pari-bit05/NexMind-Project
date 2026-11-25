@@ -1,0 +1,41 @@
+{% extends "auth_base.html" %}
+{% block title %}Create account{% endblock %}
+
+{% block content %}
+<div>
+  <h2>Create your account</h2>
+  <p class="muted" style="margin-top:0.3rem">It takes under a minute. Your notes, cards and scores stay private to you.</p>
+</div>
+
+<form method="post" action="{{ url_for('register') }}" class="stack">
+  {{ csrf_field() }}
+
+  <div class="field">
+    <label for="username">Your name</label>
+    <input class="input" id="username" name="username" type="text" maxlength="40" autocomplete="name" required autofocus>
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input class="input" id="email" name="email" type="email" autocomplete="email" required>
+  </div>
+
+  <div class="field">
+    <label for="password">Password</label>
+    <div class="input-wrap">
+      <input class="input" id="password" name="password" type="password" minlength="6" autocomplete="new-password" required>
+      <button class="btn btn-sm btn-ghost" type="button" data-toggle-password="password" aria-pressed="false">Show</button>
+    </div>
+    <span class="hint">At least 6 characters.</span>
+  </div>
+
+  <div class="field">
+    <label for="confirm">Confirm password</label>
+    <input class="input" id="confirm" name="confirm" type="password" minlength="6" autocomplete="new-password" required>
+  </div>
+
+  <button class="btn btn-primary" type="submit">Create account</button>
+</form>
+
+<p class="auth-alt">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+{% endblock %}
